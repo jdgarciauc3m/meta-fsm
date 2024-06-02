@@ -29,6 +29,7 @@ std::string_view event_name(event ev) {
   using
   enum event;
   // clang-format on
+  using namespace enum_meta;
   constexpr enum_names<event, goA, goB, goC, goD> names;
   return names[ev];
 }

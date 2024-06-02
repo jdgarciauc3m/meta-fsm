@@ -27,6 +27,7 @@ enum class state : std::uint8_t {
 std::string_view state_name(state st) {
   using
   enum state;
+  using namespace enum_meta;
   constexpr enum_names<state, A, B, C, D> names;
   return names[st];
 }

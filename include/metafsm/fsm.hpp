@@ -40,6 +40,7 @@ namespace fsm {
 
   template<transition T>
   std::string to_string() {
+    using namespace enum_meta;
     return std::format("transition: {} -> {}",
                        enum_value_name<T::event>(),
                        enum_value_name<T::state>());
@@ -59,6 +60,7 @@ namespace fsm {
     }
 
     static constexpr auto to_string() {
+      using namespace enum_meta;
       return std::format("{}\n{}\n",enum_value_name<id>(), fsm::to_string<T1>()) +
       (std::format("{}\n",fsm::to_string<T>()) + ...);
     }

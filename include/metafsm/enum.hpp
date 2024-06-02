@@ -19,21 +19,81 @@
 #include <gsl/gsl>
 #include <string_view>
 
+namespace enum_meta {
+
+namespace detail {
+
+  template <typename T>
+  constexpr std::string_view function_name() {
+#if defined(__GNUC__) or defined(__clang__)
+    return __PRETTY_FUNCTION__;
+#elif defined(_MSC_VER)
+    return __FUNCSIG__;
+#else
+#error "Unsupported compiler"
+#endif
+  }
+
+  template <auto value>
+  constexpr std::string_view function_value_name() {
+#if defined(__GNUC__) or defined(__clang__)
+    return __PRETTY_FUNCTION__;
+#elif defined(_MSC_VER)
+    return __FUNCSIG__;
+#else
+  #error "Unsupported compiler"
+#endif
+  }
+
+  consteval std::string_view type_prefix() {
+#if defined(__GNUC__) or defined(__clang__)
+    return ";";
+#elif defined(_MSC_VER)
+    return "function_name<";
+#else
+  #error "Unsupported compiler"
+#endif
+  }
+
+  consteval std::string_view type_suffix() {
+#if defined(__GNUC__) or defined(__clang__)
+    return "[with T = ";
+#elif defined(_MSC_VER)
+    return ">(void)";
+#else
+  #error "Unsupported compiler"
+#endif
+  }
+
+  consteval std::string_view enum_prefix() {
+#if defined(__GNUC__) or defined(__clang__)
+    return "[with auto value = ";
+#elif defined(_MSC_VER)
+    return "function_value_name<";
+#else
+  #error "Unsupported compiler"
+#endif
+  }
+
+  consteval std::string_view enum_suffix() {
+#if defined(__GNUC__) or defined(__clang__)
+    return ";";
+#elif defined(_MSC_VER)
+    return ">(void)";
+#else
+  #error "Unsupported compiler"
+#endif
+  }
+
+}
+
 template <typename T>
 constexpr std::string_view type_name() {
-#if defined(__GNUC__) or defined(__clang__)
-  constexpr std::string_view func_name{__PRETTY_FUNCTION__};
-  constexpr std::string_view prefix = "[with T = ";
-#elif defined(_MSC_VER)
-  constexpr std::string_view func_name{__FUNCSIG__};
-  constexpr std::string_view prefix = "type_name<";
-#endif
+  constexpr std::string_view func_name = detail::function_name<T>();
+  constexpr std::string_view prefix = detail::type_prefix();
   constexpr auto prefix_idx = func_name.find(prefix) + prefix.length();
-#if defined(__GNUC__) or defined(__clang__)
-  constexpr auto name_length = func_name.find(';') - prefix_idx;
-#elif defined(_MSC_VER)
-  constexpr auto name_length = func_name.find(">(void)") - prefix_idx;
-#endif
+  constexpr auto name_length = func_name.find(detail::type_suffix()) - prefix_idx;
+
   constexpr auto complete_name              = func_name.substr(prefix_idx, name_length);
 
   constexpr std::string_view key_enum = "enum ";
@@ -48,25 +108,15 @@ constexpr std::string_view type_name() {
     return complete_name.substr(key_struct_idx + key_struct.length(), name_length - key_struct.length());
   }
 
-  
   return func_name.substr(prefix_idx, name_length);
 }
 
 template <auto value>
 constexpr std::string_view enum_value_name() {
-#if defined(__GNUC__) or defined(__clang__)
-  constexpr std::string_view func_name{__PRETTY_FUNCTION__};
-  constexpr std::string_view prefix = "[with auto value = ";
-#elif defined(_MSC_VER)
-  constexpr std::string_view func_name{__FUNCSIG__};
-  constexpr std::string_view prefix = "enum_value_name<";
-#endif
+  constexpr std::string_view func_name = detail::function_value_name<value>();
+  constexpr std::string_view prefix = detail::enum_prefix();
   constexpr auto prefix_idx = func_name.find(prefix) + prefix.length();
-#if defined(__GNUC__) or defined(__clang__)
-  constexpr auto name_length = func_name.find(';') - prefix_idx;
-#elif defined(_MSC_VER)
-  constexpr auto name_length = func_name.find(">(void)") - prefix_idx;
-#endif
+  constexpr auto name_length = func_name.find(detail::enum_suffix()) - prefix_idx;
   return func_name.substr(prefix_idx, name_length);
 }
 
@@ -81,5 +131,7 @@ class enum_names {
   private:
     std::array<std::string_view, sizeof...(values)> names_{enum_value_name<values>()...};
 };
+
+}
 
 #endif  // META_FSM_ENUM_HPP
