@@ -19,12 +19,12 @@ using array_type = double[10];
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 // NOLINTEND(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 TEST(type_name, array) {
-  EXPECT_EQ("double [10]", type_name<array_type>());
+  EXPECT_TRUE(("double [10]"==type_name<array_type>()) or ("double[10]"==type_name<array_type>()));
 }
 
 enum class color : std::uint8_t { red, green, blue };
 TEST(type_name, scoped_enum) {
-  EXPECT_EQ("color", type_name<color>());
+  EXPECT_EQ("color",type_name<color>());
 }
 
 TEST(enum_value_name, value_red) {
