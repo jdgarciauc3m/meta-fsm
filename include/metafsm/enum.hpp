@@ -47,7 +47,7 @@ namespace detail {
 
   consteval std::string_view type_prefix() {
 #if defined(__GNUC__) or defined(__clang__)
-    return ";";
+    return "[with T = ";
 #elif defined(_MSC_VER)
     return "function_name<";
 #else
@@ -57,7 +57,7 @@ namespace detail {
 
   consteval std::string_view type_suffix() {
 #if defined(__GNUC__) or defined(__clang__)
-    return "[with T = ";
+    return ";";
 #elif defined(_MSC_VER)
     return ">(void)";
 #else
