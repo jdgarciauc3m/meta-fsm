@@ -15,22 +15,30 @@
 #ifndef META_FSM_FSM_HPP
 #define META_FSM_FSM_HPP
 
-#include <type_traits>
-#include <concepts>
-#include <string>
-#include <format>
-
 #include "metafsm/enum.hpp"
+
+#include <concepts>
+#include <format>
+#include <string>
+#include <type_traits>
+#include <functional>
 
 namespace fsm {
 
-  template<auto event_id, auto target_state_id>
+  template <auto event_id, auto target_state_id>
   struct to {
-    static constexpr auto event = event_id;
-    static constexpr auto state = target_state_id;
+      static constexpr auto event = event_id;
+      static constexpr auto state = target_state_id;
+      static void run() {}
   };
 
-  template<typename T>
+  template <auto event_id, auto target_state_id, auto action_fun>
+  struct to_doing : public to<event_id, target_state_id> {
+      static constexpr auto action = action_fun;
+      static void run() { std::invoke(action); }
+  };
+
+  template <typename T>
   concept transition = requires {
     T::event;
     T::state;
@@ -38,60 +46,71 @@ namespace fsm {
     requires(std::is_enum_v<decltype(T::state)>);
   };
 
-  template<transition T>
+  template <typename T>
+  concept transition_action = transition<T> and requires {
+    T::action();
+  };
+
+  template <transition T>
   std::string to_string() {
     using namespace enum_meta;
-    return std::format("transition: {} -> {}",
-                       enum_value_name<T::event>(),
+    return std::format("transition: {} -> {}", enum_value_name<T::event>(),
                        enum_value_name<T::state>());
   }
 
-  template<auto state_id, typename T1, typename ... T>
+  template <transition_action T>
+  std::string to_string() {
+    using namespace enum_meta;
+    return std::format("transition: {} -> (action) -> {}", enum_value_name<T::event>(),
+                       enum_value_name<T::state>());
+  }
+
+  template <auto state_id, typename T1, typename... T>
   struct state {
-    static constexpr auto id = state_id;
+      static constexpr auto id = state_id;
 
-    template <typename E>
-    static auto next(E event) {
-      if (event == T1::event) { return T1::state; }
-      if constexpr (sizeof...(T) > 0) {
-        return state<state_id, T...>::next(event);
+      template <typename E>
+      static auto next(E event) {
+        if (event == T1::event) {
+          T1::run();
+          return T1::state;
+        }
+        if constexpr (sizeof...(T) > 0) { return state<state_id, T...>::next(event); }
+        return id;
       }
-      return id;
-    }
 
-    static constexpr auto to_string() {
-      using namespace enum_meta;
-      return std::format("{}\n{}\n",enum_value_name<id>(), fsm::to_string<T1>()) +
-      (std::format("{}\n",fsm::to_string<T>()) + ...);
-    }
-
+      static constexpr auto to_string() {
+        using namespace enum_meta;
+        return std::format("{}\n{}\n", enum_value_name<id>(), fsm::to_string<T1>()) +
+               (std::format("{}\n", fsm::to_string<T>()) + ...);
+      }
   };
 
-
   namespace detail {
-    template<typename ST1, typename ... ST>
+    template <typename ST1, typename... ST>
     auto next_state(auto current_state, auto next_event) {
       if (current_state == ST1::id) { return ST1::next(next_event); }
       if constexpr (sizeof...(ST) > 0) { return next_state<ST...>(current_state, next_event); }
       return current_state;
     }
-  }
+  }  // namespace detail
 
   template <typename S, typename... ST>
   struct machine {
-  public:
-    machine(S initial_state) : current_state_{initial_state} { }
+    public:
+      machine(S initial_state) : current_state_{initial_state} { }
 
-    void process_event(auto ev) {
-      current_state_ = detail::next_state<ST...>(current_state_, ev);
-    }
+      void process_event(auto ev) {
+        current_state_ = detail::next_state<ST...>(current_state_, ev);
+      }
 
-    [[nodiscard]] S current_state() const { return current_state_; }
+      [[nodiscard]] S current_state() const { return current_state_; }
 
-  private:
-    S current_state_;
+
+    private:
+      S current_state_;
   };
 
-}
+}  // namespace fsm
 
-#endif //META_FSM_FSM_HPP
+#endif  // META_FSM_FSM_HPP
