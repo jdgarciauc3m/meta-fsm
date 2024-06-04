@@ -15,20 +15,17 @@
 #ifndef META_FSM_SIMPLE_SW_HPP
 #define META_FSM_SIMPLE_SW_HPP
 
-#include <cstdint>
-#include <array>
-
-#include <gsl/gsl>
-
-#include "states.hpp"
 #include "events.hpp"
+#include "states.hpp"
+
+#include <array>
+#include <cstdint>
+#include <gsl/gsl>
 
 // NOLINTBEGIN(readability-function-size)
 state next_state(state current_state, event next_event) {
-  using
-  enum state;
-  using
-  enum event;
+  using enum state;
+  using enum event;
   switch (current_state) {
     case A:
       switch (next_event) {
@@ -77,7 +74,7 @@ state next_state(state current_state, event next_event) {
   }
   std::unreachable();
 }
+
 // NOLINTEND(readability-function-size)
 
-
-#endif //META_FSM_SIMPLE_SW_HPP
+#endif  // META_FSM_SIMPLE_SW_HPP

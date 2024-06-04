@@ -15,15 +15,15 @@
 #ifndef META_FSM_SIMPLE_FSM_HPP
 #define META_FSM_SIMPLE_FSM_HPP
 
-#include <cstdint>
-#include <string_view>
-#include <iostream>
-
-#include "metafsm/fsm.hpp"
-
 #include "events.hpp"
+#include "metafsm/fsm.hpp"
 #include "states.hpp"
 
+#include <cstdint>
+#include <iostream>
+#include <string_view>
+
+// clang-format off
 using automata = fsm::machine<
     state,
     fsm::state<state::A,
@@ -44,6 +44,6 @@ using automata = fsm::machine<
         fsm::to_doing<event::goC, state::C, [] { std::cout<< "  D -> (action) ->C\n"; }>
         >
 >;
+// clang-format on
 
-
-#endif //META_FSM_SIMPLE_FSM_HPP
+#endif  // META_FSM_SIMPLE_FSM_HPP

@@ -19,15 +19,12 @@
 
 int main() try {
   constexpr int num_events = 10;
-  state current = state::A;
+  state current            = state::A;
   for (int i = 0; i < num_events; ++i) {
-    auto ev = next_event(i);
+    auto ev   = next_event(i);
     auto next = next_state(current, ev);
-    std::cout << std::format("{}: {} -> {} =>{}\n",
-                             i, state_name(current), event_name(ev), state_name(next));
+    std::cout << std::format("{}: {} -> {} =>{}\n", i, state_name(current), event_name(ev),
+                             state_name(next));
     current = next;
   }
-}
-catch (std::exception &ex) {
-  std::cerr << "Exception: " << ex.what() << '\n';
-}
+} catch (std::exception & ex) { std::cerr << "Exception: " << ex.what() << '\n'; }

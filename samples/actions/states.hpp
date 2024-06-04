@@ -15,21 +15,18 @@
 #ifndef META_FSM_STATES_HPP
 #define META_FSM_STATES_HPP
 
+#include "metafsm/enum.hpp"
+
 #include <cstdint>
 #include <string_view>
 
-#include "metafsm/enum.hpp"
-
-enum class state : std::uint8_t {
-  A, B, C, D
-};
+enum class state : std::uint8_t { A, B, C, D };
 
 std::string_view state_name(state st) {
-  using
-  enum state;
+  using enum state;
   using namespace enum_meta;
   constexpr enum_names<state, A, B, C, D> names;
   return names[st];
 }
 
-#endif //META_FSM_STATES_HPP
+#endif  // META_FSM_STATES_HPP

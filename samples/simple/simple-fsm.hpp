@@ -15,14 +15,14 @@
 #ifndef META_FSM_SIMPLE_FSM_HPP
 #define META_FSM_SIMPLE_FSM_HPP
 
+#include "events.hpp"
+#include "metafsm/fsm.hpp"
+#include "states.hpp"
+
 #include <cstdint>
 #include <string_view>
 
-#include "metafsm/fsm.hpp"
-
-#include "events.hpp"
-#include "states.hpp"
-
+// clang-format off
 using automata = fsm::machine<
     state,
     fsm::state<state::A,
@@ -43,6 +43,6 @@ using automata = fsm::machine<
         fsm::to<event::goC, state::C>
         >
 >;
-
+// clang format on
 
 #endif //META_FSM_SIMPLE_FSM_HPP

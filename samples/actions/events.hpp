@@ -15,28 +15,22 @@
 #ifndef META_FSM_EVENTS_HPP
 #define META_FSM_EVENTS_HPP
 
+#include "metafsm/enum.hpp"
+
 #include <cstdint>
 #include <string_view>
 
-#include "metafsm/enum.hpp"
-
-enum class event : std::uint8_t {
-  goA, goB, goC, goD
-};
+enum class event : std::uint8_t { goA, goB, goC, goD };
 
 std::string_view event_name(event ev) {
-  // clang-format off
-  using
-  enum event;
-  // clang-format on
+  using enum event;
   using namespace enum_meta;
   constexpr enum_names<event, goA, goB, goC, goD> names;
   return names[ev];
 }
 
 constexpr std::array events{
-    event::goA, event::goC, event::goD, event::goA,
-    event::goB, event::goC, event::goA, event::goD,
+  event::goA, event::goC, event::goD, event::goA, event::goB, event::goC, event::goA, event::goD,
 };
 
 event next_event(int i) {
@@ -44,4 +38,4 @@ event next_event(int i) {
   return gsl::narrow<event>(gsl::span{events}[idx]);
 }
 
-#endif //META_FSM_EVENTS_HPP
+#endif  // META_FSM_EVENTS_HPP

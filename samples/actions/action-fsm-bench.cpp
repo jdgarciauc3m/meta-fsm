@@ -29,10 +29,7 @@ int main() try {
     machine.process_event(ev);
   }
   auto end = high_resolution_clock::now();
-  std::cout << std::format("# Transitions: {} - Final state {}\n", num_events, state_name(machine.current_state()));
-  std::cout << std::format("Elapsed: {}\n", end-start);
-}
-catch (std::exception &ex) {
-  std::cerr << "Exception: " << ex.what() << '\n';
-}
-
+  std::cout << std::format("# Transitions: {} - Final state {}\n", num_events,
+                           state_name(machine.current_state()));
+  std::cout << std::format("Elapsed: {}\n", end - start);
+} catch (std::exception & ex) { std::cerr << "Exception: " << ex.what() << '\n'; }
