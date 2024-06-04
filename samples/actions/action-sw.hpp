@@ -24,17 +24,17 @@
 #include <iostream>
 
 // NOLINTBEGIN(readability-function-size)
-state next_state(state current_state, event next_event) {
+state next_state(state current_state, event next_event, int i) {
   using enum state;
   using enum event;
   switch (current_state) {
     case A:
       switch (next_event) {
         case goB:
-          std::cout << "  A -> [goB] -> B\n";
+          std::cout << i << "  A -> [goB] -> B\n";
           return B;
         case goC:
-          std::cout << "  A -> [goC] -> C\n";
+          std::cout <<i <<  "  A -> [goC] -> C\n";
           return C;
         case goD:
           return D;
@@ -46,7 +46,7 @@ state next_state(state current_state, event next_event) {
         case goA:
           return A;
         case goC:
-          std::cout << "  B -> [goC] -> C\n";
+          std::cout <<i <<  "  B -> [goC] -> C\n";
           return C;
         case goD:
           return D;
@@ -58,7 +58,7 @@ state next_state(state current_state, event next_event) {
         case goA:
           return A;
         case goB:
-          std::cout << "  C -> [goB] -> B\n";
+          std::cout <<i <<  "  C -> [goB] -> B\n";
           return B;
         case goD:
           return D;
@@ -70,10 +70,10 @@ state next_state(state current_state, event next_event) {
         case goA:
           return A;
         case goB:
-          std::cout << "  D -> [goB] -> B\n";
+          std::cout <<i <<  "  D -> [goB] -> B\n";
           return B;
         case goC:
-          std::cout << "  D -> [goC] -> C\n";
+          std::cout <<i <<  "  D -> [goC] -> C\n";
           return C;
         default:
           return D;

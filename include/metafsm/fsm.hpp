@@ -25,57 +25,61 @@
 
 namespace fsm {
 
-  template <auto event_id, auto target_state_id>
+  struct do_nothing {
+      void operator()(auto &&...) const { }
+  };
+
+  template <typename T>
+  struct is_null_action : std::bool_constant<
+      std::is_same_v<std::remove_cv_t<T>, do_nothing>> {};
+
+  template <typename T>
+  static constexpr bool is_null_action_v = is_null_action<T>::value;
+
+  template <auto event_id, auto target_state_id, auto action_fun = do_nothing{}>
   struct to {
       static constexpr auto event = event_id;
       static constexpr auto state = target_state_id;
 
-      static void run() { }
-  };
-
-  template <auto event_id, auto target_state_id, auto action_fun>
-  struct to_doing : public to<event_id, target_state_id> {
+      using action_type            = decltype(action_fun);
       static constexpr auto action = action_fun;
 
-      static void run() { std::invoke(action); }
+      static void run(auto... data) {
+        if constexpr (not std::is_same_v<action_type, do_nothing>) { std::invoke(action, data...); }
+      }
   };
 
   template <typename T>
   concept transition = requires {
+    typename T::action_type;
     T::event;
     T::state;
     requires(std::is_enum_v<decltype(T::event)>);
     requires(std::is_enum_v<decltype(T::state)>);
   };
 
-  template <typename T>
-  concept transition_action = transition<T> and requires { T::action(); };
-
   template <transition T>
   std::string to_string() {
     using namespace enum_meta;
-    return std::format("transition: {} -> {}", enum_value_name<T::event>(),
-                       enum_value_name<T::state>());
-  }
-
-  template <transition_action T>
-  std::string to_string() {
-    using namespace enum_meta;
-    return std::format("transition: {} -> (action) -> {}", enum_value_name<T::event>(),
-                       enum_value_name<T::state>());
+    if constexpr (is_null_action_v<typename T::action_type>) {
+      return std::format("transition: {} -> {}", enum_value_name<T::event>(),
+                         enum_value_name<T::state>());
+    } else {
+      return std::format("transition: {} -> {} -> {}", enum_value_name<T::event>(),
+                         type_name<typename T::action_type>(), enum_value_name<T::state>());
+    }
   }
 
   template <auto state_id, typename T1, typename... T>
   struct state {
       static constexpr auto id = state_id;
 
-      template <typename E>
-      static auto next(E event) {
+      static auto next(auto event, auto... data) {
         if (event == T1::event) {
-          T1::run();
+          T1::run(data...);
           return T1::state;
         }
-        if constexpr (sizeof...(T) > 0) { return state<state_id, T...>::next(event); }
+        if constexpr (sizeof...(T) > 0) { return state<state_id, T...>::next(event, data...); }
         return id;
       }
 
@@ -88,9 +92,11 @@ namespace fsm {
 
   namespace detail {
     template <typename ST1, typename... ST>
-    auto next_state(auto current_state, auto next_event) {
-      if (current_state == ST1::id) { return ST1::next(next_event); }
-      if constexpr (sizeof...(ST) > 0) { return next_state<ST...>(current_state, next_event); }
+    auto next_state(auto current_state, auto next_event, auto... data) {
+      if (current_state == ST1::id) { return ST1::next(next_event, data...); }
+      if constexpr (sizeof...(ST) > 0) {
+        return next_state<ST...>(current_state, next_event, data...);
+      }
       return current_state;
     }
   }  // namespace detail
@@ -100,8 +106,8 @@ namespace fsm {
     public:
       machine(S initial_state) : current_state_{initial_state} { }
 
-      void process_event(auto ev) {
-        current_state_ = detail::next_state<ST...>(current_state_, ev);
+      void process_event(auto ev, auto... data) {
+        current_state_ = detail::next_state<ST...>(current_state_, ev, data...);
       }
 
       [[nodiscard]] S current_state() const { return current_state_; }

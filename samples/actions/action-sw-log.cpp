@@ -22,7 +22,7 @@ int main() try {
   state current            = state::A;
   for (int i = 0; i < num_events; ++i) {
     auto ev   = next_event(i);
-    auto next = next_state(current, ev);
+    auto next = next_state(current, ev, i);
     std::cout << std::format("{}: {} -> {} =>{}\n", i, state_name(current), event_name(ev),
                              state_name(next));
     current = next;

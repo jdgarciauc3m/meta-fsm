@@ -22,10 +22,8 @@ enum class event_id : std::uint8_t {
 
 using basic_transition = fsm::to<event_id::poweron, state_id::on>;
 static_assert(fsm::transition<basic_transition>);
-static_assert(not fsm::transition_action<basic_transition>);
 
-using output_transition = fsm::to_doing<event_id::poweron, state_id::on, []{}>;
-static_assert(not fsm::transition_action<basic_transition>);
+using output_transition = fsm::to<event_id::poweron, state_id::on, []{}>;
 static_assert(fsm::transition<basic_transition>);
 
 

@@ -26,7 +26,7 @@ int main() try {
   for (int i = 0; i < num_events; ++i) {
     auto ev = next_event(i);
     auto prev_state = aut.current_state();
-    aut.process_event(ev);
+    aut.process_event(ev,i);
     auto post_state = aut.current_state();
     std::cout << std::format("{}: {} -> {} =>{}\n", i, state_name(prev_state), event_name(ev), state_name(post_state));
   }

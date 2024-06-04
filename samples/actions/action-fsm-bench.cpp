@@ -19,14 +19,14 @@
 #include <iostream>
 
 int main() try {
-  constexpr int num_events = 100'000;
+  constexpr int num_events = 1'000'000;
 
   automata machine{state::A};
   using namespace std::chrono;
   auto start = high_resolution_clock::now();
   for (int i = 0; i < num_events; ++i) {
     auto ev = next_event(i);
-    machine.process_event(ev);
+    machine.process_event(ev, i);
   }
   auto end = high_resolution_clock::now();
   std::cout << std::format("# Transitions: {} - Final state {}\n", num_events,
