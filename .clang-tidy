@@ -29,7 +29,7 @@ CheckOptions:
 
 WarningsAsErrors: '*'
 
-HeaderFileExtensions: [ '', 'hpp' ]
+HeaderFileExtensions: [ 'h', 'hpp' ]
 
 FormatStyle: file
 

@@ -42,7 +42,7 @@ FetchContent_MakeAvailable(googletest)
 if (NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
     option(METAFSM_TIDY "Use clang tidy" OFF)
     if (METAFSM_TIDY)
-        set(CMAKE_CXX_CLANG_TIDY clang-tidy -header-filter=.*)
+        set(CMAKE_CXX_CLANG_TIDY clang-tidy)
     endif ()
 endif ()
 
