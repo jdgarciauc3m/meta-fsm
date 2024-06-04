@@ -19,9 +19,9 @@
 
 #include <concepts>
 #include <format>
+#include <functional>
 #include <string>
 #include <type_traits>
-#include <functional>
 
 namespace fsm {
 
@@ -29,12 +29,14 @@ namespace fsm {
   struct to {
       static constexpr auto event = event_id;
       static constexpr auto state = target_state_id;
-      static void run() {}
+
+      static void run() { }
   };
 
   template <auto event_id, auto target_state_id, auto action_fun>
   struct to_doing : public to<event_id, target_state_id> {
       static constexpr auto action = action_fun;
+
       static void run() { std::invoke(action); }
   };
 
@@ -47,9 +49,7 @@ namespace fsm {
   };
 
   template <typename T>
-  concept transition_action = transition<T> and requires {
-    T::action();
-  };
+  concept transition_action = transition<T> and requires { T::action(); };
 
   template <transition T>
   std::string to_string() {
@@ -106,6 +106,10 @@ namespace fsm {
 
       [[nodiscard]] S current_state() const { return current_state_; }
 
+      static auto to_string() {
+        return std::format("State type = {}\n", enum_meta::type_name<S>()) +
+               (ST::to_string() + ...);
+      }
 
     private:
       S current_state_;

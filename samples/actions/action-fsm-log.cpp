@@ -20,6 +20,7 @@
 
 int main() try {
   automata aut{state::A};
+  std::cout << aut.to_string() << '\n';
 
   constexpr int num_events = 10;
   for (int i = 0; i < num_events; ++i) {
