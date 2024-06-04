@@ -24,7 +24,6 @@
 #include <string_view>
 
 // clang-format off
-static constexpr auto nothing = [](int){};
 using automata = fsm::machine<
     state,
     fsm::state<state::A,
