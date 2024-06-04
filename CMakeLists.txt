@@ -39,9 +39,12 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 #Enable clang-tidy checks
-if (NOT(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
-    set(CMAKE_CXX_CLANG_TIDY clang-tidy -header-filter=.*)
-endif()
+if (NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
+    option(METAFSM_TIDY "Use clang tidy" OFF)
+    if (METAFSM_TIDY)
+        set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+    endif ()
+endif ()
 
 include_directories(include)
 

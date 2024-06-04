@@ -11,22 +11,19 @@
 // the License is distributed on an "AS IS" BASIS,  WITHOUT WARRANTIES OR
 // CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 // specific language governing permissions and  limitations under the License.
+#include "metafsm/fsm.hpp"
 
-#ifndef META_FSM_STATES_HPP
-#define META_FSM_STATES_HPP
+enum class state_id : std::uint8_t {
+  off, on, running, stopped
+};
+enum class event_id : std::uint8_t {
+  poweron, run, stop, poweroff
+};
 
-#include "metafsm/enum.hpp"
+using basic_transition = fsm::to<event_id::poweron, state_id::on>;
+static_assert(fsm::transition<basic_transition>);
 
-#include <cstdint>
-#include <string_view>
+using output_transition = fsm::to<event_id::poweron, state_id::on, []{}>;
+static_assert(fsm::transition<basic_transition>);
 
-enum class state : std::uint8_t { A, B, C, D };
 
-std::string_view state_name(state st) {
-  using enum state;
-  using namespace enum_meta;
-  constexpr enum_names<state, A, B, C, D> names;
-  return names[st];
-}
-
-#endif  // META_FSM_STATES_HPP

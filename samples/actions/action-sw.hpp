@@ -12,8 +12,8 @@
 // CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 // specific language governing permissions and  limitations under the License.
 
-#ifndef META_FSM_SIMPLE_SW_HPP
-#define META_FSM_SIMPLE_SW_HPP
+#ifndef META_FSM_ACTION_SW_HPP
+#define META_FSM_ACTION_SW_HPP
 
 #include "events.hpp"
 #include "states.hpp"
@@ -21,17 +21,20 @@
 #include <array>
 #include <cstdint>
 #include <gsl/gsl>
+#include <iostream>
 
 // NOLINTBEGIN(readability-function-size)
-state next_state(state current_state, event next_event) {
+state next_state(state current_state, event next_event, int i) {
   using enum state;
   using enum event;
   switch (current_state) {
     case A:
       switch (next_event) {
         case goB:
+          std::cout << i << "  A -> [goB] -> B\n";
           return B;
         case goC:
+          std::cout <<i <<  "  A -> [goC] -> C\n";
           return C;
         case goD:
           return D;
@@ -43,6 +46,7 @@ state next_state(state current_state, event next_event) {
         case goA:
           return A;
         case goC:
+          std::cout <<i <<  "  B -> [goC] -> C\n";
           return C;
         case goD:
           return D;
@@ -54,6 +58,7 @@ state next_state(state current_state, event next_event) {
         case goA:
           return A;
         case goB:
+          std::cout <<i <<  "  C -> [goB] -> B\n";
           return B;
         case goD:
           return D;
@@ -65,8 +70,10 @@ state next_state(state current_state, event next_event) {
         case goA:
           return A;
         case goB:
+          std::cout <<i <<  "  D -> [goB] -> B\n";
           return B;
         case goC:
+          std::cout <<i <<  "  D -> [goC] -> C\n";
           return C;
         default:
           return D;
@@ -77,4 +84,4 @@ state next_state(state current_state, event next_event) {
 
 // NOLINTEND(readability-function-size)
 
-#endif  // META_FSM_SIMPLE_SW_HPP
+#endif  // META_FSM_ACTION_SW_HPP

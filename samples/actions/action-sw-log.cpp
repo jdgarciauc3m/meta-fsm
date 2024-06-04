@@ -12,21 +12,19 @@
 // CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 // specific language governing permissions and  limitations under the License.
 
-#ifndef META_FSM_STATES_HPP
-#define META_FSM_STATES_HPP
+#include "action-sw.hpp"
 
-#include "metafsm/enum.hpp"
+#include <format>
+#include <iostream>
 
-#include <cstdint>
-#include <string_view>
-
-enum class state : std::uint8_t { A, B, C, D };
-
-std::string_view state_name(state st) {
-  using enum state;
-  using namespace enum_meta;
-  constexpr enum_names<state, A, B, C, D> names;
-  return names[st];
-}
-
-#endif  // META_FSM_STATES_HPP
+int main() try {
+  constexpr int num_events = 10;
+  state current            = state::A;
+  for (int i = 0; i < num_events; ++i) {
+    auto ev   = next_event(i);
+    auto next = next_state(current, ev, i);
+    std::cout << std::format("{}: {} -> {} =>{}\n", i, state_name(current), event_name(ev),
+                             state_name(next));
+    current = next;
+  }
+} catch (std::exception & ex) { std::cerr << "Exception: " << ex.what() << '\n'; }

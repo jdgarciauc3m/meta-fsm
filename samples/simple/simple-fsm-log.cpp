@@ -12,26 +12,22 @@
 // CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 // specific language governing permissions and  limitations under the License.
 
-#include <iostream>
-#include <format>
-
 #include "metafsm/fsm.hpp"
-
 #include "simple-fsm.hpp"
 
+#include <format>
+#include <iostream>
 
 int main() try {
   automata aut{state::A};
 
   constexpr int num_events = 10;
   for (int i = 0; i < num_events; ++i) {
-    auto ev = next_event(i);
+    auto ev         = next_event(i);
     auto prev_state = aut.current_state();
     aut.process_event(ev);
     auto post_state = aut.current_state();
-    std::cout << std::format("{}: {} -> {} =>{}\n", i, state_name(prev_state), event_name(ev), state_name(post_state));
+    std::cout << std::format("{}: {} -> {} =>{}\n", i, state_name(prev_state), event_name(ev),
+                             state_name(post_state));
   }
-}
-catch (std::exception &ex) {
-  std::cerr << "Exception: " << ex.what() << '\n';
-}
+} catch (std::exception & ex) { std::cerr << "Exception: " << ex.what() << '\n'; }
