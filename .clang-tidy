@@ -9,6 +9,7 @@ performance-*,
 readability-*,
 -misc-include-cleaner,
 -modernize-use-trailing-return-type,
+-modernize-use-designated-initializers,
 -readability-identifier-length,
 -readability-redundant-access-specifiers'
 
