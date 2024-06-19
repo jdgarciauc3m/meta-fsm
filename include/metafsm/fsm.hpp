@@ -37,7 +37,7 @@ namespace fsm {
   static constexpr bool is_null_action_v = is_null_action<T>::value;
 
   template <auto event_id, auto target_state_id, auto action_fun = do_nothing{}>
-  struct to {
+  struct on {
       static constexpr auto event = event_id;
       static constexpr auto state = target_state_id;
 

@@ -11,11 +11,11 @@ enum class event_id : std::uint8_t {
 
 using automata = fsm::machine<state_id,
     fsm::state<state_id::off,
-        fsm::to<event_id::poweron, state_id::on>,
-        fsm::to<event_id::poweroff, state_id::off>>,
+        fsm::on<event_id::poweron, state_id::on>,
+        fsm::on<event_id::poweroff, state_id::off>>,
     fsm::state<state_id::on,
-        fsm::to<event_id::poweron, state_id::on>,
-        fsm::to<event_id::poweroff, state_id::off>>>;
+        fsm::on<event_id::poweron, state_id::on>,
+        fsm::on<event_id::poweroff, state_id::off>>>;
 
 TEST(machine, process_event) {
   automata m{state_id::off};

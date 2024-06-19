@@ -27,21 +27,21 @@
 using automata = fsm::machine<
     state,
     fsm::state<state::A,
-        fsm::to<event::goB, state::B, [](int i) { std::cout<< i << "  A -> (action) ->B\n"; }>,
-        fsm::to<event::goC, state::C, [] (int i){ std::cout<< i<< "  A -> (action) ->C\n"; }>,
-        fsm::to<event::goD, state::D>>,
+        fsm::on<event::goB, state::B, [](int i) { std::cout<< i << "  A -> (action) ->B\n"; }>,
+        fsm::on<event::goC, state::C, [] (int i){ std::cout<< i<< "  A -> (action) ->C\n"; }>,
+        fsm::on<event::goD, state::D>>,
     fsm::state<state::B,
-        fsm::to<event::goA, state::A>,
-        fsm::to<event::goC, state::C, [] (int i){ std::cout<< i<< "  B -> (action) ->C\n"; }>,
-        fsm::to<event::goD, state::D>>,
+        fsm::on<event::goA, state::A>,
+        fsm::on<event::goC, state::C, [] (int i){ std::cout<< i<< "  B -> (action) ->C\n"; }>,
+        fsm::on<event::goD, state::D>>,
     fsm::state<state::C,
-        fsm::to<event::goA, state::A>,
-        fsm::to<event::goB, state::B, [] (int i){ std::cout<< i<< "  C -> (action) ->B\n"; }>,
-        fsm::to<event::goD, state::D>>,
+        fsm::on<event::goA, state::A>,
+        fsm::on<event::goB, state::B, [] (int i){ std::cout<< i<< "  C -> (action) ->B\n"; }>,
+        fsm::on<event::goD, state::D>>,
     fsm::state<state::D,
-        fsm::to<event::goA, state::A>,
-        fsm::to<event::goB, state::B, [] (int i){ std::cout<< i<< "  D -> (action) ->B\n"; }>,
-        fsm::to<event::goC, state::C, [] (int i){ std::cout<< i<< "  D -> (action) ->C\n"; }>
+        fsm::on<event::goA, state::A>,
+        fsm::on<event::goB, state::B, [] (int i){ std::cout<< i<< "  D -> (action) ->B\n"; }>,
+        fsm::on<event::goC, state::C, [] (int i){ std::cout<< i<< "  D -> (action) ->C\n"; }>
         >
 >;
 // clang-format on

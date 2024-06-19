@@ -20,10 +20,10 @@ enum class event_id : std::uint8_t {
   poweron, run, stop, poweroff
 };
 
-using basic_transition = fsm::to<event_id::poweron, state_id::on>;
+using basic_transition = fsm::on<event_id::poweron, state_id::on>;
 static_assert(fsm::transition<basic_transition>);
 
-using output_transition = fsm::to<event_id::poweron, state_id::on, []{}>;
+using output_transition = fsm::on<event_id::poweron, state_id::on, []{}>;
 static_assert(fsm::transition<basic_transition>);
 
 

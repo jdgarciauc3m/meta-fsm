@@ -10,8 +10,8 @@ enum class event_id : std::uint8_t {
 };
 
 using on_state = fsm::state<state_id::on,
-    fsm::to<event_id::run, state_id::running>,
-    fsm::to<event_id::poweroff, state_id::off>
+    fsm::on<event_id::run, state_id::running>,
+    fsm::on<event_id::poweroff, state_id::off>
 >;
 
 TEST(state, next_default) {

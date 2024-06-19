@@ -29,13 +29,13 @@ using automata = fsm::machine<
     tcp_state,
     fsm::state<tcp_state::closed,
         // fsm::other_self<[] (auto & ...) { send(tcp_segment{segment_kind::rst}); }>
-        fsm::to<tcp_event::syscall_listen, tcp_state::listen>,
-        fsm::to<tcp_event::syscall_connect, tcp_state::syn_sent,
+        fsm::on<tcp_event::syscall_listen, tcp_state::listen>,
+        fsm::on<tcp_event::syscall_connect, tcp_state::syn_sent,
             [](tcp_segment &, protocol_status & st) { st.send_syn(); }>
     >,
     fsm::state<tcp_state::listen,
         // fsm::other_self<[] (auto & ...) { status.send_syn_ack_on_listen(rcv_segment.seq);
-        fsm::to<tcp_event::seg_syn, tcp_state::syn_rcvd,
+        fsm::on<tcp_event::seg_syn, tcp_state::syn_rcvd,
             [](tcp_segment & seg, protocol_status & st) { st.send_syn_ack_on_listen(seg.seq);}>
     >,
     fsm::state<tcp_state::syn_rcvd,
@@ -47,14 +47,14 @@ using automata = fsm::machine<
 //            fsm::next_self<
 //                [](tcp_segment & seg, protocol_status & st) {status.increase_dup_acks();}>
 //        >,
-        fsm::to<tcp_event::seg_rst, tcp_state::closed,
+        fsm::on<tcp_event::seg_rst, tcp_state::closed,
             [](tcp_segment & , protocol_status & st) { st.reset_on_failure(); }>,
-        fsm::to<tcp_event::syscall_close, tcp_state::closed,
+        fsm::on<tcp_event::syscall_close, tcp_state::closed,
             [](tcp_segment & , protocol_status & st) { st.reset(); }>
     >,
     fsm::state<tcp_state::syn_sent,
         //fsm::other_self<[](auto &...) { std::cout << "SYN_SENT: event ignored!\n"; }>
-        fsm::to<tcp_event::seg_syn, tcp_state::syn_rcvd,
+        fsm::on<tcp_event::seg_syn, tcp_state::syn_rcvd,
             [](tcp_segment & seg, protocol_status & st) { st.simultaneous_open(seg.seq); }>,
 //        fsm::when<tcp_event::seg_syn_ack,
 //            [] (tcp_segment & seg, protocol_status & st){ return st.is_next_send(seg.ack); },
@@ -63,7 +63,7 @@ using automata = fsm::machine<
 //            fsm::next<tcp_state::closed,
 //                [] (tcp_segment & seg, protocol_status & st){ st.reset(); }>
 //        >
-         fsm::to<tcp_event::seg_rst, tcp_state::closed,
+         fsm::on<tcp_event::seg_rst, tcp_state::closed,
               [] (tcp_segment & , protocol_status & st){ st.reset_on_failure(); }>
     >,
     fsm::state<tcp_state::established,
@@ -75,9 +75,9 @@ using automata = fsm::machine<
 //            fsm::next<tcp_state::closed,
 //                [] (tcp_segment & seg, protocol_status & st){ st.increase_dup_acks(); }>
 //        >
-        fsm::to<tcp_event::seg_fin, tcp_state::closed,
+        fsm::on<tcp_event::seg_fin, tcp_state::closed,
             [] (tcp_segment & , protocol_status & st){ st.reset(); }>,
-        fsm::to<tcp_event::syscall_close, tcp_state::closed,
+        fsm::on<tcp_event::syscall_close, tcp_state::closed,
             [] (tcp_segment & , protocol_status & st){ st.reset(); }>
     >
 >;

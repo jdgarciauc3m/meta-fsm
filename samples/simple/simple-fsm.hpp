@@ -26,21 +26,21 @@
 using automata = fsm::machine<
     state,
     fsm::state<state::A,
-        fsm::to<event::goB, state::B>,
-        fsm::to<event::goC, state::C>,
-        fsm::to<event::goD, state::D>>,
+        fsm::on<event::goB, state::B>,
+        fsm::on<event::goC, state::C>,
+        fsm::on<event::goD, state::D>>,
     fsm::state<state::B,
-        fsm::to<event::goA, state::A>,
-        fsm::to<event::goC, state::C>,
-        fsm::to<event::goD, state::D>>,
+        fsm::on<event::goA, state::A>,
+        fsm::on<event::goC, state::C>,
+        fsm::on<event::goD, state::D>>,
     fsm::state<state::C,
-        fsm::to<event::goA, state::A>,
-        fsm::to<event::goB, state::B>,
-        fsm::to<event::goD, state::D>>,
+        fsm::on<event::goA, state::A>,
+        fsm::on<event::goB, state::B>,
+        fsm::on<event::goD, state::D>>,
     fsm::state<state::D,
-        fsm::to<event::goA, state::A>,
-        fsm::to<event::goB, state::B>,
-        fsm::to<event::goC, state::C>
+        fsm::on<event::goA, state::A>,
+        fsm::on<event::goB, state::B>,
+        fsm::on<event::goC, state::C>
         >
 >;
 // clang format on
